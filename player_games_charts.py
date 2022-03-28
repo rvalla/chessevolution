@@ -1,7 +1,8 @@
-import datetime as dt
+#import datetime as dt
 import json as js
 import pandas as pd
-from matplotlib.pyplot import figure
+import datetime as dt
+import matplotlib.colors as pltcolors
 import matplotlib.pyplot as plt
 import chart_config as cc
 
@@ -20,6 +21,8 @@ ratings_evolution = pd.read_csv("data/" + player["username"] + "_ratings_evoluti
 ratings_evolution.index_name = "date"
 games_count = pd.read_csv("data/" + player["username"] + "_games.csv", header=0, index_col=0)
 games_count.index_name = "date"
+
+color_map = pltcolors.ListedColormap(["tab:red", "tab:orange", "tab:blue", "tab:green", "limegreen"])
 
 def get_data_lists(data):
 	list = []
@@ -45,7 +48,7 @@ def ratings_by_game_texts(key):
 
 def ratings_by_game(data, key, texts, y_axis):
 	print("Plotting ratings by game...", end="\r")
-	f = figure(num=None, figsize=(cc.w, cc.h), dpi=cc.image_resolution, facecolor=cc.background_figure, edgecolor='k')
+	f = plt.figure(num=None, figsize=(cc.w, cc.h), dpi=cc.image_resolution, facecolor=cc.background_figure, edgecolor='k')
 	list, avg_list = get_data_lists(data["rating"])
 	plt.plot(range(data.shape[0]), list, color=cc.colors[6], linewidth=1.0, label=texts[4])
 	plt.plot(range(data.shape[0]), avg_list, linewidth=2.5, color=cc.colors[0], label=texts[3])
@@ -66,7 +69,7 @@ def result_history_texts(key):
 
 def result_history(data, key, texts, y_axis):
 	print("Plotting result history by game...", end="\r")
-	f = figure(num=None, figsize=(cc.w, cc.h), dpi=cc.image_resolution, facecolor=cc.background_figure, edgecolor='k')
+	f = plt.figure(num=None, figsize=(cc.w, cc.h), dpi=cc.image_resolution, facecolor=cc.background_figure, edgecolor='k')
 	list, avg_list = get_data_lists(data["points"].cumsum())
 	plt.plot(range(data.shape[0]), list, color=cc.colors[6], linewidth=1.0, label=texts[4])
 	plt.plot(range(data.shape[0]), avg_list, linewidth=2.5, color=cc.colors[0], label=texts[3])
@@ -85,7 +88,7 @@ def histogram_texts(key):
 
 def ranking_histogram(data, key, bins, texts):
 	print("Plotting ratings histogram...", end="\r")
-	f = figure(num=None, figsize=(cc.w, cc.h), dpi=cc.image_resolution, facecolor=cc.background_figure, edgecolor='k')
+	f = plt.figure(num=None, figsize=(cc.w, cc.h), dpi=cc.image_resolution, facecolor=cc.background_figure, edgecolor='k')
 	data["rating"].plot(kind="hist", bins=bins, color=cc.colors[6])
 	cc.format_and_background()
 	cc.build_texts(texts[0], texts[1], texts[2])
@@ -93,11 +96,20 @@ def ranking_histogram(data, key, bins, texts):
 	print("Charts were saved!                    ", end="\n")
 	log.write("-- " + player["name"] + " games histogram (" + key + ") was saved.\n")
 
+def get_scatter_rating_difference(key, dates):
+	list = [0]
+	for d in range(1,len(dates)):
+		last_rating = ratings_evolution.loc[dates[d-1]][key + "_mean"]
+		list.append(ratings_evolution.loc[dates[d]][key + "_mean"] - last_rating)
+	return list
+
 def game_count_scatter(texts, key, y_axis, week_interval):
 	print("Plotting games count...", end="\r")
-	f = figure(num=None, figsize=(cc.w, cc.h), dpi=cc.image_resolution, facecolor=cc.background_figure, edgecolor='k')
+	f = plt.figure(num=None, figsize=(cc.w, cc.h), dpi=cc.image_resolution, facecolor=cc.background_figure, edgecolor='k')
 	games_count["x"] = pd.to_datetime(games_count.index, format="%Y-%m-%d")
-	games_count[games_count[key] != 0].plot(kind="scatter", x="x", y=key, color=cc.colors[0])
+	the_games = games_count[games_count[key] != 0]
+	rating_diff = get_scatter_rating_difference(key, the_games.index.to_list())
+	the_games.plot(kind="scatter", x="x", y=key, c=rating_diff, colormap=color_map)
 	cc.format_and_background()
 	cc.build_texts(texts[0], texts[1], texts[2])
 	cc.grid_and_ticks(y_axis[0],y_axis[1],y_axis[2],y_axis[3])

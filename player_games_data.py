@@ -40,7 +40,8 @@ print("The games are ready!            ", end="\n")
 #preparing dataframes...
 ratings_columns = ["date", "variant", "time","pre_rating","rating","difference","result","points","color","opponent", "op_difference"]
 ratings_evolution_columns = ["bullet_min", "bullet_max", "bullet_mean",
-							"blitz_min", "blitz_max", "blitz_mean", "rapid_min", "rapid_max", "rapid_mean"]
+							"blitz_min", "blitz_max", "blitz_mean",
+							"rapid_min", "rapid_max", "rapid_mean"]
 games_count_columns = ["bullet", "blitz", "rapid", "classical"]
 if player["previous_data"]:
 	past_ratings = pd.read_csv("data/" + player["username"] + "_ratings_history.csv")

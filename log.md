@@ -27,3 +27,7 @@
 -- Rodrigo Valla played games scatter (blitz) was saved.
 -- Rodrigo Valla played games scatter (rapid) was saved.
 
+### 2022-03-28:
+-- Rodrigo Valla played games scatter (bullet) was saved.
+-- Rodrigo Valla played games scatter (blitz) was saved.
+-- Rodrigo Valla played games scatter (rapid) was saved.

@@ -61,13 +61,7 @@ def x_grid_and_ticks():
 	plt.gca().set_facecolor(background_plot)
 
 def get_ticks_labels(y_min, y_max, interval, divisor):
-	values = []
-	if y_min < 0 and y_max > 0:
-		a = np.arange(0, y_max, interval)
-		b = a[:0:-1] * (-1)
-		values = np.concatenate((b, a),axis=0)
-	else:
-		values =  np.arange(y_min, y_max, interval)
+	values =  np.arange(y_min, y_max, interval)
 	labels = (values / divisor).tolist()
 	return values, labels
 
@@ -81,8 +75,13 @@ def build_axis_texts(axis, title, x_axis, y_axis):
 	axis.set_xlabel(x_axis, fontname=legend_font)
 	axis.set_ylabel(y_axis, fontname=legend_font)
 
+def build_color_bar(color_bar, limits):
+	plt.clim(limits[0],limits[1])
+	for n in color_bar.ax.yaxis.get_ticklabels():
+		n.set_fontsize(6)
+
 def build_legend():
-	plt.legend(loc=2, shadow = True, facecolor = background_figure,
+	plt.legend(loc=0, shadow = True, facecolor = background_figure,
 			prop={'family' : legend_font, 'size' : legend_text_size})
 
 def build_legends(axis_a, axis_b):

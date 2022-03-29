@@ -22,7 +22,9 @@ ratings_evolution.index_name = "date"
 games_count = pd.read_csv("data/" + player["username"] + "_games.csv", header=0, index_col=0)
 games_count.index_name = "date"
 
-color_map = pltcolors.ListedColormap(["tab:red", "tab:orange", "tab:blue", "tab:green", "limegreen"])
+color_map = pltcolors.ListedColormap(["r", "tab:orange", "gold",
+									"khaki", "white", "steelblue", "dodgerblue",
+									"limegreen", "lime"])
 
 def get_data_lists(data):
 	list = []
@@ -55,7 +57,7 @@ def ratings_by_game(data, key, texts, y_axis):
 	cc.grid_and_ticks(y_axis[0], y_axis[1], y_axis[2], y_axis[3])
 	cc.build_texts(texts[0], texts[1], texts[2])
 	cc.build_legend()
-	cc.save_plot("rating_by_game_" + key, f)
+	cc.save_plot(player["username"] + "_rating_by_game_" + key, f)
 	print("Charts were saved!                    ", end="\n")
 	log.write("-- " + player["name"] + " rating evolution (" + key + ") was saved.\n")
 
@@ -76,7 +78,7 @@ def result_history(data, key, texts, y_axis):
 	cc.grid_and_ticks(y_axis[0], y_axis[1], y_axis[2], y_axis[3])
 	cc.build_texts(texts[0], texts[1], texts[2])
 	cc.build_legend()
-	cc.save_plot("result_by_game_" + key, f)
+	cc.save_plot(player["username"] + "_result_by_game_" + key, f)
 	print("Charts were saved!                    ", end="\n")
 	log.write("-- " + player["name"] + " result history (" + key + ") was saved.\n")
 
@@ -92,7 +94,7 @@ def ranking_histogram(data, key, bins, texts):
 	data["rating"].plot(kind="hist", bins=bins, color=cc.colors[6])
 	cc.format_and_background()
 	cc.build_texts(texts[0], texts[1], texts[2])
-	cc.save_plot("rating_histogram_" + key, f)
+	cc.save_plot(player["username"] + "_rating_histogram_" + key, f)
 	print("Charts were saved!                    ", end="\n")
 	log.write("-- " + player["name"] + " games histogram (" + key + ") was saved.\n")
 
@@ -103,37 +105,60 @@ def get_scatter_rating_difference(key, dates):
 		list.append(ratings_evolution.loc[dates[d]][key + "_mean"] - last_rating)
 	return list
 
+def get_scatter_limits(data):
+	minimum = min(data)
+	maximum = max(data)
+	if abs(minimum) > abs(maximum):
+		return [minimum, minimum*-1]
+	else:
+		return [-maximum, maximum]
+
 def game_count_scatter(texts, key, y_axis, week_interval):
 	print("Plotting games count...", end="\r")
 	f = plt.figure(num=None, figsize=(cc.w, cc.h), dpi=cc.image_resolution, facecolor=cc.background_figure, edgecolor='k')
 	games_count["x"] = pd.to_datetime(games_count.index, format="%Y-%m-%d")
 	the_games = games_count[games_count[key] != 0]
 	rating_diff = get_scatter_rating_difference(key, the_games.index.to_list())
-	the_games.plot(kind="scatter", x="x", y=key, c=rating_diff, colormap=color_map)
+	plot = plt.scatter(the_games["x"], the_games[key], c=rating_diff, cmap=color_map)
 	cc.format_and_background()
 	cc.build_texts(texts[0], texts[1], texts[2])
 	cc.grid_and_ticks(y_axis[0],y_axis[1],y_axis[2],y_axis[3])
 	cc.ticks_week_locator(week_interval)
-	cc.save_plot("games_count_" + key, f)
+	c = plt.colorbar(plot)
+	cc.build_color_bar(c, get_scatter_limits(rating_diff))
+	cc.save_plot(player["username"] + "_games_count_" + key, f)
 	print("Charts were saved!                    ", end="\n")
 	log.write("-- " + player["name"] + " played games scatter (" + key + ") was saved.\n")
 
+def get_player_limits(text, key):
+	offset = 0
+	if key == "blitz":
+		offset = 4
+	elif key == "rapid":
+		offset = 8
+	limits = []
+	list = text.split(",")
+	for i in range(4):
+		limits.append(int(list[i + offset]))
+	return limits
 
-ratings_by_game(ratings[ratings["variant"]=="bullet"], "bullet", ratings_by_game_texts("bullet"), [700, 1500, 100, 1])
-ratings_by_game(ratings[ratings["variant"]=="blitz"], "blitz",ratings_by_game_texts("blitz"), [900, 1500, 100, 1])
-ratings_by_game(ratings[ratings["variant"]=="rapid"], "rapid",ratings_by_game_texts("rapid"), [1200, 1600, 100, 1])
+if player["plot_bullet"]:
+	ratings_by_game(ratings[ratings["variant"]=="bullet"], "bullet", ratings_by_game_texts("bullet"), get_player_limits(player["ratings_limits"], "bullet"))
+	result_history(ratings[ratings["variant"]=="bullet"], "bullet", result_history_texts("bullet"), get_player_limits(player["results_limits"], "bullet"))
+	ranking_histogram(ratings[ratings["variant"]=="bullet"], "bullet", 20, histogram_texts("bullet"))
+	game_count_scatter([player["name"] + " 's " + " bullet games:", "Time", "Games"], "bullet", get_player_limits(player["games_limits"], "bullet"), 6)
 
-result_history(ratings[ratings["variant"]=="bullet"], "bullet", result_history_texts("bullet"), [-200,100,50,1])
-result_history(ratings[ratings["variant"]=="blitz"], "blitz", result_history_texts("blitz"), [-50,25,10,1])
-result_history(ratings[ratings["variant"]=="rapid"], "rapid", result_history_texts("rapid"), [-15,10,5,1])
+if player["plot_blitz"]:
+	ratings_by_game(ratings[ratings["variant"]=="blitz"], "blitz",ratings_by_game_texts("blitz"), get_player_limits(player["ratings_limits"], "blitz"))
+	result_history(ratings[ratings["variant"]=="blitz"], "blitz", result_history_texts("blitz"), get_player_limits(player["results_limits"], "blitz"))
+	ranking_histogram(ratings[ratings["variant"]=="blitz"], "blitz", 20, histogram_texts("blitz"))
+	game_count_scatter([player["name"] + " 's " + " blitz games:", "Time", "Games"], "blitz", get_player_limits(player["games_limits"], "blitz"), 6)
 
-ranking_histogram(ratings[ratings["variant"]=="bullet"], "bullet", 20, histogram_texts("bullet"))
-ranking_histogram(ratings[ratings["variant"]=="blitz"], "blitz", 20, histogram_texts("blitz"))
-ranking_histogram(ratings[ratings["variant"]=="rapid"], "rapid", 20, histogram_texts("rapid"))
-
-game_count_scatter([player["name"] + " 's " + " bullet games:", "Time", "Games"], "bullet", [0,110,25,1], 6)
-game_count_scatter([player["name"] + " 's " + " blitz games:", "Time", "Games"], "blitz", [0,50,10,1], 6)
-game_count_scatter([player["name"] + " 's " + " rapid games:", "Time", "Games"], "rapid", [0,10,2,1], 6)
+if player["plot_rapid"]:
+	ratings_by_game(ratings[ratings["variant"]=="rapid"], "rapid",ratings_by_game_texts("rapid"), get_player_limits(player["ratings_limits"], "rapid"))
+	result_history(ratings[ratings["variant"]=="rapid"], "rapid", result_history_texts("rapid"), get_player_limits(player["results_limits"], "rapid"))
+	ranking_histogram(ratings[ratings["variant"]=="rapid"], "rapid", 20, histogram_texts("rapid"))
+	game_count_scatter([player["name"] + " 's " + " rapid games:", "Time", "Games"], "rapid", get_player_limits(player["games_limits"], "rapid"), 6)
 
 #closing log file...
 log.write("\n")

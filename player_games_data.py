@@ -12,7 +12,7 @@ log.write("### %s"%today)
 log.write(":" + "\n")
 
 config = js.load(open("config/lichess.json"))
-player = js.load(open("config/rvalla.json"))
+player = js.load(open("config/augusr.json"))
 
 print("Let's get some data from " + player["name"] + "'s games...", end="\n")
 print("Starting a lichess API client...", end="\r")
@@ -105,7 +105,7 @@ def ratings_data(games):
 				errors[0] += 1
 	ratings["op_difference"] = ratings["opponent"] - ratings["rating"]
 	m = "-- Rankings evolution for " + player["name"] + " was analyzed..." + "\n"
-	m = "   I noted " + str(errors[0] + " errors this time.", end="\n")
+	m = "   I noted " + str(errors[0]) + " errors this time." + "\n"
 	log.write(m)
 	print("All ratings have been processed!                  ", end="\n")
 	print("I noted " + str(errors[0]) + " errors this time...", end="\n")

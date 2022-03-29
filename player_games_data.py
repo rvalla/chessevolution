@@ -63,7 +63,7 @@ def ratings_data(games):
 		date = games[g]["createdAt"] - dt.timedelta(hours=3)
 		ratings.iloc[g]["date"] = date.strftime("%Y-%m-%d")
 		ratings.iloc[g]["time"] = date.strftime("%H:%M")
-		if games[g]["players"]["white"]["user"]["name"] == "rvalla":
+		if games[g]["players"]["white"]["user"]["name"] == player["username"]:
 			ratings.iloc[g]["pre_rating"] = games[g]["players"]["white"]["rating"]
 			ratings.iloc[g]["opponent"] = games[g]["players"]["black"]["rating"]
 			ratings.iloc[g]["color"] = "white"
@@ -105,7 +105,7 @@ def ratings_data(games):
 				errors[0] += 1
 	ratings["op_difference"] = ratings["opponent"] - ratings["rating"]
 	m = "-- Rankings evolution for " + player["name"] + " was analyzed..." + "\n"
-	m = "   I noted " + str(errors[0]) + " errors this time." + "\n"
+	m += "   I noted " + str(errors[0]) + " errors this time." + "\n"
 	log.write(m)
 	print("All ratings have been processed!                  ", end="\n")
 	print("I noted " + str(errors[0]) + " errors this time...", end="\n")

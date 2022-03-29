@@ -73,3 +73,27 @@
 -- Rodrigo Valla result history (rapid) was saved.
 -- Rodrigo Valla games histogram (rapid) was saved.
 -- Rodrigo Valla played games scatter (rapid) was saved.
+
+### 2022-03-29:
+-- Ticiano B's ratings evolution was analysed...
+-- Ticiano B's games were counted...
+
+### 2022-03-29:
+-- Ticiano B rating evolution (blitz) was saved.
+-- Ticiano B result history (blitz) was saved.
+-- Ticiano B games histogram (blitz) was saved.
+-- Ticiano B played games scatter (blitz) was saved.
+
+### 2022-03-29:
+-- Augusto R's ratings evolution was analysed...
+-- Augusto R's games were counted...
+
+### 2022-03-29:
+-- Augusto R rating evolution (bullet) was saved.
+-- Augusto R result history (bullet) was saved.
+-- Augusto R games histogram (bullet) was saved.
+-- Augusto R played games scatter (bullet) was saved.
+-- Augusto R rating evolution (blitz) was saved.
+-- Augusto R result history (blitz) was saved.
+-- Augusto R games histogram (blitz) was saved.
+-- Augusto R played games scatter (blitz) was saved.

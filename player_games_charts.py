@@ -12,7 +12,7 @@ log.write("\n")
 log.write("### %s"%today)
 log.write(":" + "\n")
 
-player = js.load(open("config/rvalla.json"))
+player = js.load(open("config/augusr.json"))
 
 print("Let's plot some data from " + player["name"] + "'s games...", end="\n")
 

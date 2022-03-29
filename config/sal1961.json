@@ -1,0 +1,17 @@
+{
+	"name": "Ticiano B",
+	"username": "sal1961",
+	"start_year": 2021,
+	"start_month": 5,
+	"start_day": 1,
+	"end_year": 2022,
+	"end_month": 3,
+	"end_day": 1,
+	"previous_data" : false,
+	"ratings_limits": "700,1500,100,1,1300,1700,100,1,1200,1600,100,1",
+	"results_limits": "-200,100,50,1,-30,40,10,1,-15,5,5,1",
+	"games_limits": "0,110,25,1,0,50,10,1,0,10,2,1",
+	"plot_bullet": false,
+	"plot_blitz": true,
+	"plot_rapid": false
+}

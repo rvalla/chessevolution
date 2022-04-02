@@ -60,7 +60,7 @@ def ratings_data(games):
 	for g in range(len(games)):
 		print("I am processing ratings for game " + str(g), end="\r")
 		ratings.iloc[g]["variant"] = games[g]["speed"]
-		date = games[g]["createdAt"] - dt.timedelta(hours=3)
+		date = games[g]["createdAt"] + dt.timedelta(hours=player["timezone_diff"])
 		ratings.iloc[g]["date"] = date.strftime("%Y-%m-%d")
 		ratings.iloc[g]["time"] = date.strftime("%H:%M")
 		if games[g]["players"]["white"]["user"]["name"] == player["username"]:

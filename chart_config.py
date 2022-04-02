@@ -33,18 +33,35 @@ def save_plot(name, figure):
 	plt.savefig(chart_path + name + ".png", facecolor=figure.get_facecolor())
 	plt.close(figure)
 
-def grid_and_ticks(y_min, y_max, ticks_interval, ticks_divisor):
+def grid_and_ticks(minor_grids, y_min, y_max, ticks_interval, ticks_divisor):
 	plt.grid(which='both', axis='both')
-	plt.minorticks_on()
 	plt.grid(True, "major", "y", ls="-", lw=0.8, c=major_grid_color, alpha=alphaMGC)
-	plt.grid(True, "minor", "y", ls="--", lw=0.3, c=minor_grid_color, alpha=alphamGC)
 	plt.grid(True, "major", "x", ls="-", lw=0.8, c=major_grid_color, alpha=alphaMGC)
-	plt.grid(True, "minor", "x", ls="--", lw=0.3, c=minor_grid_color, alpha=alphamGC)
+	if minor_grids:
+		plt.minorticks_on()
+		plt.grid(True, "minor", "y", ls="--", lw=0.3, c=minor_grid_color, alpha=alphamGC)
+		plt.grid(True, "minor", "x", ls="--", lw=0.3, c=minor_grid_color, alpha=alphamGC)
 	yticks, ylabels = get_ticks_labels(y_min, y_max + ticks_interval, ticks_interval, ticks_divisor)
 	plt.xticks(fontsize=6)
 	plt.yticks(fontsize=6)
 	plt.yticks(yticks, ylabels)
 	plt.gca().set_facecolor(background_plot)
+
+def auto_grid_and_ticks(minor_grids):
+	plt.grid(which='both', axis='both')
+	plt.grid(True, "major", "y", ls="-", lw=0.8, c=major_grid_color, alpha=alphaMGC)
+	plt.grid(True, "major", "x", ls="-", lw=0.8, c=major_grid_color, alpha=alphaMGC)
+	if minor_grids:
+		plt.minorticks_on()
+		plt.grid(True, "minor", "y", ls="--", lw=0.3, c=minor_grid_color, alpha=alphamGC)
+		plt.grid(True, "minor", "x", ls="--", lw=0.3, c=minor_grid_color, alpha=alphamGC)
+	plt.xticks(fontsize=6)
+	plt.yticks(fontsize=6)
+	plt.gca().set_facecolor(background_plot)
+
+def format_ticks():
+	plt.xticks(fontsize=6)
+	plt.yticks(fontsize=6)
 
 def format_and_background():
 	plt.xticks(fontsize=6)
@@ -69,6 +86,11 @@ def build_texts(title, x_axis, y_axis):
 	plt.title(title, fontname=default_font)
 	plt.xlabel(x_axis, fontname=legend_font)
 	plt.ylabel(y_axis, fontname=legend_font)
+
+def build_subplot_texts(title, x_axis, y_axis):
+	plt.title(title, fontname=default_font, fontsize=11)
+	plt.xlabel(x_axis, fontname=legend_font, fontsize=8)
+	plt.ylabel(y_axis, fontname=legend_font, fontsize=8)
 
 def build_axis_texts(axis, title, x_axis, y_axis):
 	axis.set_title(title, fontname=default_font)

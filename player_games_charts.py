@@ -12,7 +12,7 @@ log.write("\n")
 log.write("### %s"%today)
 log.write(":" + "\n")
 
-player = js.load(open("config/sal1961.json"))
+player = js.load(open("config/rvalla.json"))
 
 print("Let's plot some data from " + player["name"] + "'s games...", end="\n")
 
@@ -22,7 +22,10 @@ ratings_evolution.index_name = "date"
 games_count = pd.read_csv("data/" + player["username"] + "_games.csv", header=0, index_col=0)
 games_count.index_name = "date"
 games_time = pd.read_csv("data/" + player["username"] + "_time_analysis.csv", header=0, index_col=0)
+expected_result = pd.read_csv("data/" + player["username"] + "_expected_results.csv", header=0, index_col=0)
+expected_result_diff = pd.read_csv("data/" + player["username"] + "_expected_results_diff.csv", header=0, index_col=0)
 
+half_color_map = pltcolors.ListedColormap(["white", "steelblue", "dodgerblue", "orange", "gold", "limegreen", "lime"])
 color_map = pltcolors.ListedColormap(["r", "tab:orange", "gold",
 									"khaki", "white", "steelblue", "dodgerblue",
 									"limegreen", "lime"])
@@ -134,7 +137,7 @@ def get_scatter_limits(data):
 	else:
 		return [-maximum, maximum]
 
-def game_count_scatter(texts, key, y_axis, week_interval):
+def game_count_scatter(texts, key, axis, week_interval):
 	print("Plotting games count...", end="\r")
 	f = plt.figure(num=None, figsize=(cc.w, cc.h), dpi=cc.image_resolution, facecolor=cc.background_figure, edgecolor='k')
 	games_count["x"] = pd.to_datetime(games_count.index, format="%Y-%m-%d")
@@ -143,13 +146,48 @@ def game_count_scatter(texts, key, y_axis, week_interval):
 	plot = plt.scatter(the_games["x"], the_games[key], c=rating_diff, cmap=color_map)
 	cc.format_and_background()
 	cc.build_texts(texts[0], texts[1], texts[2])
-	cc.grid_and_ticks(True, y_axis[0],y_axis[1],y_axis[2],y_axis[3])
+	cc.grid_and_ticks(True, axis[0],axis[1],axis[2],axis[3])
 	cc.ticks_week_locator(week_interval)
 	c = plt.colorbar(plot)
-	cc.build_color_bar(c, get_scatter_limits(rating_diff))
+	cc.build_color_bar(c, get_scatter_limits(rating_diff), "Daily rating difference")
 	cc.save_plot(player["username"] + "_games_count_" + key, f)
 	print("Charts were saved!                    ", end="\n")
 	log.write("-- " + player["name"] + " played games scatter (" + key + ") was saved.\n")
+
+def expected_result_texts(key):
+	texts = [player["name"] + " 's " + key + " expected result"]
+	texts.append("By opponent rating")
+	texts.append("Oponnent rating")
+	texts.append("Winning chance")
+	texts.append("By opponent rating difference")
+	texts.append("Opponent rating difference")
+	texts.append("Winning chance")
+	texts.append("Games")
+	return texts
+
+def expected_result_scatter(texts, key):
+	print("Plotting expected result scatter...", end="\r")
+	f = plt.figure(num=None, figsize=(cc.d_w, cc.d_h), dpi=cc.image_resolution, facecolor=cc.background_figure, edgecolor='k')
+	f.suptitle(texts[0], fontname=cc.default_font, fontsize=14)
+	data = expected_result[expected_result[key + "_g"] != 0]
+	by_rating = plt.subplot2grid((2, 1), (0, 0))
+	by_rating = plt.scatter(data.index, data[key + "_p"], c=data[key + "_g"], cmap=half_color_map)
+	cc.format_and_background()
+	cc.build_texts(texts[1], texts[2], texts[3])
+	cc.grid_and_ticks(True, 0, 1, 0.25, 1)
+	c = plt.colorbar(by_rating)
+	cc.build_color_bar(c, [0, max(data[key + "_g"].tolist())], texts[7])
+	data = expected_result_diff[expected_result_diff[key + "_g"] != 0]
+	by_difference = plt.subplot2grid((2, 1), (1, 0))
+	by_difference = plt.scatter(data.index, data[key + "_p"], c=data[key + "_g"], cmap=half_color_map)
+	cc.format_and_background()
+	cc.build_texts(texts[4], texts[5], texts[6])
+	cc.grid_and_ticks(True, 0, 1, 0.25, 1)
+	c = plt.colorbar(by_difference)
+	cc.build_color_bar(c, [0, max(data[key + "_g"].tolist())], texts[7])
+	cc.save_plot(player["username"] + "_expected_results_" + key, f)
+	print("Charts were saved!                      ", end="\n")
+	log.write("-- " + player["name"] + " expected results (" + key + ") was saved.\n")
 
 def get_player_limits(text, key):
 	offset = 0
@@ -237,8 +275,11 @@ if player["plot_bullet"]:
 	result_history(points, get_range(300, length), "bullet", "300", result_history_texts("bullet", 300), get_player_limits(player["results_limits"], "bullet"))
 	ranking_histogram(data, "bullet", 20, histogram_texts("bullet"))
 	game_count_scatter([player["name"] + " 's " + " bullet games:", "Time", "Games"], "bullet", get_player_limits(player["games_limits"], "bullet"), 6)
+	expected_result_scatter(expected_result_texts("bullet"), "bullet")
 	plot_time_analysis("bullet", time_analysis_texts("bullet"))
 	streaks_histogram(ratings[ratings["variant"]=="bullet"], "bullet", 15, streaks_texts("bullet"))
+
+expected_result_scatter(expected_result_texts("bullet"), "bullet")
 
 if player["plot_blitz"]:
 	data = ratings[ratings["variant"]=="blitz"]
@@ -250,6 +291,7 @@ if player["plot_blitz"]:
 	result_history(points, get_range(200, length), "blitz", "200", result_history_texts("blitz", 200), get_player_limits(player["results_limits"], "blitz"))
 	ranking_histogram(data, "blitz", 20, histogram_texts("blitz"))
 	game_count_scatter([player["name"] + " 's " + " blitz games:", "Time", "Games"], "blitz", get_player_limits(player["games_limits"], "blitz"), 6)
+	expected_result_scatter(expected_result_texts("blitz"), "blitz")
 	plot_time_analysis("blitz", time_analysis_texts("blitz"))
 	streaks_histogram(ratings[ratings["variant"]=="blitz"], "blitz", 15, streaks_texts("blitz"))
 
@@ -263,6 +305,7 @@ if player["plot_rapid"]:
 	result_history(points, get_range(100, length), "rapid", "100", result_history_texts("rapid", 100), get_player_limits(player["results_limits"], "rapid"))
 	ranking_histogram(data, "rapid", 20, histogram_texts("rapid"))
 	game_count_scatter([player["name"] + " 's " + " rapid games:", "Time", "Games"], "rapid", get_player_limits(player["games_limits"], "rapid"), 6)
+	expected_result_scatter(expected_result_texts("rapid"), "rapid")
 	plot_time_analysis("rapid", time_analysis_texts("rapid"))
 	streaks_histogram(ratings[ratings["variant"]=="rapid"], "rapid", 15, streaks_texts("rapid"))
 

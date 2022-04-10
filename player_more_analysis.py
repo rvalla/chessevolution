@@ -8,7 +8,7 @@ log.write("\n")
 log.write("### %s"%today)
 log.write(":" + "\n")
 
-player = js.load(open("config/augusr.json"))
+player = js.load(open("config/rvalla.json"))
 
 print("Let's analyze some data from " + player["name"] + "'s games...", end="\n")
 
@@ -28,11 +28,14 @@ hours_columns = ["bullet_g", "bullet_w", "bullet_d", "bullet_l", "bullet_res", "
 				"rapid_g", "rapid_w", "rapid_d", "rapid_l", "rapid_res", "rapid_diff", "rapid_diff_avg",
 				"_g", "_w", "_d", "_l", "_res", "_diff", "_diff_avg"]
 hours = pd.DataFrame(0, index=hours_index, columns=hours_columns)
+expected_result_columns = ["bullet_g", "bullet_r", "bullet_p", "blitz_g", "blitz_r", "blitz_p",
+							"rapid_g", "rapid_r", "rapid_p"]
+expected_result = pd.DataFrame(0, index=[500 + x * 20 for x in range(96)], columns=expected_result_columns)
+expected_result_diff = pd.DataFrame(0, index=[-1000 + x * 20 for x in range(101)], columns=expected_result_columns)
 
 def analyze_day_time():
 	for g in range(ratings.shape[0]):
 		print("I am analyzing game " + str(g), end="\r")
-		key = None
 		variant = ratings.iloc[g]["variant"]
 		if variant == "bullet" or variant == "blitz" or variant == "rapid":
 			time = ratings.iloc[g]["time"].split(":")[0]
@@ -56,11 +59,40 @@ def analyze_day_time():
 	hours["_res"] = hours["bullet_res"] + hours["blitz_res"] + hours["rapid_res"]
 	hours["_diff"] = hours["bullet_diff"] + hours["blitz_diff"] + hours["rapid_diff"]
 	hours["_diff_avg"] = (hours["bullet_diff"] + hours["blitz_diff"] + hours["rapid_diff"]) / 3
+	print("I finished analyzing day times...                    ", end="\n")
 
-analyze_day_time()
-hours.to_csv("data/" + player["username"] + "_time_analysis.csv", index=True, index_label="hours")
+#analyze_day_time()
+#hours.to_csv("data/" + player["username"] + "_time_analysis.csv", index=True, index_label="hours")
+#log.write("-- Analyzing games time performance for " + player["name"] + "\n")
 
-log.write("-- Analyzing games time performance for " + player["name"] + "\n")
+def get_expected_rows(opponent, difference):
+	r = opponent // 20 - 25
+	rd = difference // 20 + 50
+	return [int(r), int(rd)]
+
+def get_expected_results():
+	for g in range(ratings.shape[0]):
+		print("I am analyzing expected results. Game: " + str(g), end="\r")
+		rows = get_expected_rows(ratings.iloc[g]["opponent"], ratings.iloc[g]["op_difference"])
+		variant = ratings.iloc[g]["variant"]
+		if variant == "bullet" or variant == "blitz" or variant == "rapid":
+			result = ratings.iloc[g]["points"] + 1
+			expected_result.iloc[rows[0]][variant + "_g"] += 1
+			expected_result.iloc[rows[0]][variant + "_r"] += result
+			expected_result_diff.iloc[rows[1]][variant + "_g"] += 1
+			expected_result_diff.iloc[rows[1]][variant + "_r"] += result
+	expected_result["bullet_p"] = (expected_result["bullet_r"] / expected_result["bullet_g"]) / 2
+	expected_result["blitz_p"] = (expected_result["blitz_r"] / expected_result["blitz_g"]) / 2
+	expected_result["rapid_p"] = (expected_result["rapid_r"] / expected_result["rapid_g"]) / 2
+	expected_result_diff["bullet_p"] = (expected_result_diff["bullet_r"] / expected_result_diff["bullet_g"]) / 2
+	expected_result_diff["blitz_p"] = (expected_result_diff["blitz_r"] / expected_result_diff["blitz_g"]) / 2
+	expected_result_diff["rapid_p"] = (expected_result_diff["rapid_r"] / expected_result_diff["rapid_g"]) / 2
+	print("I finished analyzing win probability...                    ", end="\n")
+
+get_expected_results()
+expected_result.to_csv("data/" + player["username"] + "_expected_results.csv", index=True, index_label="opponent_rating")
+expected_result_diff.to_csv("data/" + player["username"] + "_expected_results_diff.csv", index=True, index_label="rating_difference")
+
 log.close()
 
 print("All files saved!          ", end="\n")

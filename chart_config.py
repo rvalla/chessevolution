@@ -97,8 +97,9 @@ def build_axis_texts(axis, title, x_axis, y_axis):
 	axis.set_xlabel(x_axis, fontname=legend_font)
 	axis.set_ylabel(y_axis, fontname=legend_font)
 
-def build_color_bar(color_bar, limits):
+def build_color_bar(color_bar, limits, label):
 	plt.clim(limits[0],limits[1])
+	color_bar.set_label(label, rotation=270, fontsize=10, labelpad=10, fontname=legend_font)
 	for n in color_bar.ax.yaxis.get_ticklabels():
 		n.set_fontsize(6)
 

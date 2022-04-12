@@ -61,13 +61,13 @@ def analyze_day_time():
 	hours["_diff_avg"] = (hours["bullet_diff"] + hours["blitz_diff"] + hours["rapid_diff"]) / 3
 	print("I finished analyzing day times...                    ", end="\n")
 
-#analyze_day_time()
-#hours.to_csv("data/" + player["username"] + "_time_analysis.csv", index=True, index_label="hours")
-#log.write("-- Analyzing games time performance for " + player["name"] + "\n")
+analyze_day_time()
+hours.to_csv("data/" + player["username"] + "_time_analysis.csv", index=True, index_label="hours")
+log.write("-- Analyzing games time performance for " + player["name"] + "\n")
 
 def get_expected_rows(opponent, difference):
 	r = opponent // 20 - 25
-	rd = difference // 20 + 50
+	rd = (difference + 10) // 20 + 50
 	return [int(r), int(rd)]
 
 def get_expected_results():

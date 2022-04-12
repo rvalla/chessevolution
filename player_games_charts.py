@@ -279,8 +279,6 @@ if player["plot_bullet"]:
 	plot_time_analysis("bullet", time_analysis_texts("bullet"))
 	streaks_histogram(ratings[ratings["variant"]=="bullet"], "bullet", 15, streaks_texts("bullet"))
 
-expected_result_scatter(expected_result_texts("bullet"), "bullet")
-
 if player["plot_blitz"]:
 	data = ratings[ratings["variant"]=="blitz"]
 	points = data["points"].cumsum()

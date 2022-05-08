@@ -12,7 +12,7 @@ log.write("### %s"%today)
 log.write(":" + "\n")
 
 config = js.load(open("config/lichess.json"))
-player = js.load(open("config/augusr.json"))
+player = js.load(open("config/rvalla.json"))
 
 print("Let's get some data from " + player["name"] + "'s games...", end="\n")
 print("Starting a lichess API client...", end="\r")

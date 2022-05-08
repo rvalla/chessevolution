@@ -177,3 +177,66 @@
 -- Rodrigo Valla expected results (bullet) was saved.
 -- Rodrigo Valla expected results (blitz) was saved.
 -- Rodrigo Valla expected results (rapid) was saved.
+
+### 2022-04-14:
+-- Augusto R expected results (bullet) was saved.
+-- Augusto R expected results (bullet) was saved.
+
+### 2022-04-14:
+-- Augusto R expected results (bullet) was saved.
+-- Augusto R expected results (blitz) was saved.
+
+### 2022-05-08:
+-- Rankings evolution for Augusto R was analyzed...
+   I noted 0 errors this time.
+-- Augusto R's ratings evolution was analysed...
+-- Augusto R's games were counted...
+
+### 2022-05-08:
+-- Rankings evolution for Rodrigo Valla was analyzed...
+   I noted 0 errors this time.
+-- Rodrigo Valla's ratings evolution was analysed...
+-- Rodrigo Valla's games were counted...
+
+### 2022-05-08:
+-- Augusto R rating evolution (bullet) was saved.
+-- Augusto R result history (bullet) was saved.
+-- Augusto R rating evolution (bullet) was saved.
+-- Augusto R result history (bullet) was saved.
+-- Augusto R games histogram (bullet) was saved.
+-- Augusto R played games scatter (bullet) was saved.
+-- Augusto R expected results (bullet) was saved.
+-- Augusto R games time analysis (bullet) was saved.
+-- Augusto R games streak histogram (bullet) was saved.
+
+### 2022-05-08:
+-- Analyzing games time performance for Rodrigo Valla
+
+### 2022-05-08:
+-- Rodrigo Valla rating evolution (bullet) was saved.
+-- Rodrigo Valla result history (bullet) was saved.
+-- Rodrigo Valla rating evolution (bullet) was saved.
+-- Rodrigo Valla result history (bullet) was saved.
+-- Rodrigo Valla games histogram (bullet) was saved.
+-- Rodrigo Valla played games scatter (bullet) was saved.
+-- Rodrigo Valla expected results (bullet) was saved.
+-- Rodrigo Valla games time analysis (bullet) was saved.
+-- Rodrigo Valla games streak histogram (bullet) was saved.
+-- Rodrigo Valla rating evolution (blitz) was saved.
+-- Rodrigo Valla result history (blitz) was saved.
+-- Rodrigo Valla rating evolution (blitz) was saved.
+-- Rodrigo Valla result history (blitz) was saved.
+-- Rodrigo Valla games histogram (blitz) was saved.
+-- Rodrigo Valla played games scatter (blitz) was saved.
+-- Rodrigo Valla expected results (blitz) was saved.
+-- Rodrigo Valla games time analysis (blitz) was saved.
+-- Rodrigo Valla games streak histogram (blitz) was saved.
+-- Rodrigo Valla rating evolution (rapid) was saved.
+-- Rodrigo Valla result history (rapid) was saved.
+-- Rodrigo Valla rating evolution (rapid) was saved.
+-- Rodrigo Valla result history (rapid) was saved.
+-- Rodrigo Valla games histogram (rapid) was saved.
+-- Rodrigo Valla played games scatter (rapid) was saved.
+-- Rodrigo Valla expected results (rapid) was saved.
+-- Rodrigo Valla games time analysis (rapid) was saved.
+-- Rodrigo Valla games streak histogram (rapid) was saved.

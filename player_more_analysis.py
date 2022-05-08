@@ -30,8 +30,8 @@ hours_columns = ["bullet_g", "bullet_w", "bullet_d", "bullet_l", "bullet_res", "
 hours = pd.DataFrame(0, index=hours_index, columns=hours_columns)
 expected_result_columns = ["bullet_g", "bullet_r", "bullet_p", "blitz_g", "blitz_r", "blitz_p",
 							"rapid_g", "rapid_r", "rapid_p"]
-expected_result = pd.DataFrame(0, index=[500 + x * 20 for x in range(96)], columns=expected_result_columns)
-expected_result_diff = pd.DataFrame(0, index=[-1000 + x * 20 for x in range(101)], columns=expected_result_columns)
+expected_result = pd.DataFrame(0, index=[500 + x * 20 for x in range(116)], columns=expected_result_columns)
+expected_result_diff = pd.DataFrame(0, index=[-1500 + x * 20 for x in range(151)], columns=expected_result_columns)
 
 def analyze_day_time():
 	for g in range(ratings.shape[0]):
@@ -67,7 +67,7 @@ log.write("-- Analyzing games time performance for " + player["name"] + "\n")
 
 def get_expected_rows(opponent, difference):
 	r = opponent // 20 - 25
-	rd = (difference + 10) // 20 + 50
+	rd = (difference + 10) // 20 + 75
 	return [int(r), int(rd)]
 
 def get_expected_results():

@@ -3,10 +3,10 @@
 	"username": "sal1961",
 	"timezone_diff": 2,
 	"start_year": 2022,
-	"start_month": 3,
+	"start_month": 12,
 	"start_day": 1,
-	"end_year": 2022,
-	"end_month": 4,
+	"end_year": 2023,
+	"end_month": 1,
 	"end_day": 1,
 	"previous_data" : true,
 	"ratings_limits": "700,1500,100,1,1300,1700,100,1,1200,1600,100,1",
@@ -14,5 +14,5 @@
 	"games_limits": "0,110,25,1,0,50,10,1,0,10,2,1",
 	"plot_bullet": false,
 	"plot_blitz": true,
-	"plot_rapid": false
+	"plot_rapid": true
 }

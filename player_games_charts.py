@@ -12,7 +12,7 @@ log.write("\n")
 log.write("### %s"%today)
 log.write(":" + "\n")
 
-player = js.load(open("config/rvalla.json"))
+player = js.load(open("config/sal1961.json"))
 
 print("Let's plot some data from " + player["name"] + "'s games...", end="\n")
 
@@ -93,7 +93,7 @@ def result_history_texts(key, last_n):
 def result_history(data, range, key, last_key, texts, y_axis):
 	print("Plotting result history by game...", end="\r")
 	f = plt.figure(num=None, figsize=(cc.w, cc.h), dpi=cc.image_resolution, facecolor=cc.background_figure, edgecolor='k')
-	list, avg_list = get_data_lists(data[range[0]:range[1]])
+	list, avg_list = get_data_lists(data.iloc[range[0]:range[1]])
 	plt.plot(list, color=cc.colors[6], linewidth=1.0, label=texts[4])
 	plt.plot(avg_list, linewidth=2.5, color=cc.colors[0], label=texts[3])
 	if last_key == "all":
@@ -299,13 +299,14 @@ if player["plot_rapid"]:
 	length = data.shape[0]
 	ratings_by_game(data, get_range(0, length), "rapid", "all", ratings_by_game_texts("rapid", 0), get_player_limits(player["ratings_limits"], "rapid"))
 	result_history(points, get_range(0, length), "rapid", "all", result_history_texts("rapid", 0), get_player_limits(player["results_limits"], "rapid"))
-	ratings_by_game(data, get_range(100, length), "rapid", "100", ratings_by_game_texts("rapid", 100), get_player_limits(player["ratings_limits"], "rapid"))
-	result_history(points, get_range(100, length), "rapid", "100", result_history_texts("rapid", 100), get_player_limits(player["results_limits"], "rapid"))
+	ratings_by_game(data, get_range(150, length), "rapid", "150", ratings_by_game_texts("rapid", 150), get_player_limits(player["ratings_limits"], "rapid"))
+	result_history(points, get_range(150, length), "rapid", "150", result_history_texts("rapid", 150), get_player_limits(player["results_limits"], "rapid"))
 	ranking_histogram(data, "rapid", 20, histogram_texts("rapid"))
 	game_count_scatter([player["name"] + " 's " + " rapid games:", "Time", "Games"], "rapid", get_player_limits(player["games_limits"], "rapid"), 6)
 	expected_result_scatter(expected_result_texts("rapid"), "rapid")
 	plot_time_analysis("rapid", time_analysis_texts("rapid"))
 	streaks_histogram(ratings[ratings["variant"]=="rapid"], "rapid", 15, streaks_texts("rapid"))
+
 
 #closing log file...
 log.write("\n")

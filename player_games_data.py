@@ -12,7 +12,7 @@ log.write("### %s"%today)
 log.write(":" + "\n")
 
 config = js.load(open("config/lichess.json"))
-player = js.load(open("config/rvalla.json"))
+player = js.load(open("config/sal1961.json"))
 
 print("Let's get some data from " + player["name"] + "'s games...", end="\n")
 print("Starting a lichess API client...", end="\r")
@@ -32,13 +32,13 @@ period_index = period.format()
 
 print("Obtaining games from lichess...", end="\r")
 
-the_games = client.games.export_by_player(player["username"], rated=True, since=start_date_m, until=end_date_m, max=config["maxgames"])
+the_games = client.games.export_by_player(player["username"], rated=True, since=start_date_m, until=end_date_m, max=config["maxgames"], moves=False)
 games = list(the_games)
 
 print("The games are ready!            ", end="\n")
 
 #preparing dataframes...
-ratings_columns = ["date", "variant", "time","pre_rating","rating","difference","result","points","color","opponent", "op_difference"]
+ratings_columns = ["date", "variant", "time","pre_rating","rating","difference","result","points","color","opponent", "op_username", "op_difference"]
 ratings_evolution_columns = ["bullet_min", "bullet_max", "bullet_mean",
 							"blitz_min", "blitz_max", "blitz_mean",
 							"rapid_min", "rapid_max", "rapid_mean"]
@@ -66,6 +66,7 @@ def ratings_data(games):
 		if games[g]["players"]["white"]["user"]["name"] == player["username"]:
 			ratings.iloc[g]["pre_rating"] = games[g]["players"]["white"]["rating"]
 			ratings.iloc[g]["opponent"] = games[g]["players"]["black"]["rating"]
+			ratings.iloc[g]["op_username"] = games[g]["players"]["black"]["user"]["name"]
 			ratings.iloc[g]["color"] = "white"
 			try:
 				if games[g]["winner"] == "white":
@@ -86,6 +87,7 @@ def ratings_data(games):
 		else:
 			ratings.iloc[g]["pre_rating"] = games[g]["players"]["black"]["rating"]
 			ratings.iloc[g]["opponent"] = games[g]["players"]["white"]["rating"]
+			ratings.iloc[g]["op_username"] = games[g]["players"]["white"]["user"]["name"]
 			ratings.iloc[g]["color"] = "black"
 			try:
 				if games[g]["winner"] == "black":

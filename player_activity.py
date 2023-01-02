@@ -5,11 +5,11 @@ import pandas as pd
 
 errors = [0,0,0] #ratings, evolution, games
 
-log = open("log.md", "a") #preparing log file...
-today = dt.date.today()
-log.write("\n")
-log.write("### %s"%today)
-log.write(":" + "\n")
+#log = open("log.md", "a") #preparing log file...
+#today = dt.date.today()
+#log.write("\n")
+#log.write("### %s"%today)
+#log.write(":" + "\n")
 
 config = js.load(open("config/lichess.json"))
 player = js.load(open("config/rvalla.json"))

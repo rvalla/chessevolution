@@ -4,18 +4,17 @@ import pandas as pd
 
 log = open("log.md", "a") #preparing log file...
 today = dt.date.today()
-log.write("\n")
 log.write("### %s"%today)
 log.write(":" + "\n")
 
-player = js.load(open("config/rvalla.json"))
+player = js.load(open("config/sal1961.json"))
 
 print("Let's analyze some data from " + player["name"] + "'s games...", end="\n")
 
 ratings = pd.read_csv("data/" + player["username"] + "_ratings_history.csv")
 ratings_evolution = pd.read_csv("data/" + player["username"] + "_ratings_evolution.csv", header=0, index_col=0)
 ratings_evolution.index_name = "date"
-games_count = pd.read_csv("data/" + player["username"] + "_games.csv", header=0, index_col=0)
+games_count = pd.read_csv("data/" + player["username"] + "_games_count.csv", header=0, index_col=0)
 games_count.index_name = "date"
 
 print("The data were loaded!", end="\n")

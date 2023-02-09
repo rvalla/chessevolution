@@ -32,22 +32,23 @@ period_index = period.format()
 
 print("Obtaining games from lichess...", end="\r")
 
-the_games = client.games.export_by_player(player["username"], rated=True, since=start_date_m, until=end_date_m, max=config["maxgames"], moves=False)
+the_games = client.games.export_by_player(player["username"], rated=True, since=start_date_m, until=end_date_m, max=config["maxgames"], moves=True, opening=True)
 games = list(the_games)
 
 print("The games are ready!            ", end="\n")
 
 #preparing dataframes...
-ratings_columns = ["date", "variant", "time","pre_rating","rating","difference","result","points","color","opponent", "op_username", "op_difference"]
+ratings_columns = ["date", "id", "variant", "time","pre_rating","rating","difference","result","points","color",
+					"opponent", "op_username", "op_difference", "moves_count", "moves", "opening"]
 ratings_evolution_columns = ["bullet_min", "bullet_max", "bullet_mean",
 							"blitz_min", "blitz_max", "blitz_mean",
 							"rapid_min", "rapid_max", "rapid_mean"]
-games_count_columns = ["bullet", "blitz", "rapid", "classical"]
+games_count_columns = ["bullet", "blitz", "rapid", "classical", "correspondence"]
 if player["previous_data"]:
 	past_ratings = pd.read_csv("data/" + player["username"] + "_ratings_history.csv")
 	past_ratings_evolution = pd.read_csv("data/" + player["username"] + "_ratings_evolution.csv", header=0, index_col=0)
 	past_ratings_evolution.index_name = "date"
-	past_games_count = pd.read_csv("data/" + player["username"] + "_games.csv", header=0, index_col=0)
+	past_games_count = pd.read_csv("data/" + player["username"] + "_games_count.csv", header=0, index_col=0)
 	past_games_count.index_name = "date"
 ratings = pd.DataFrame(index=range(len(games)), columns=ratings_columns)
 ratings_evolution = pd.DataFrame(index=period_index, columns=ratings_evolution_columns)
@@ -59,52 +60,59 @@ def ratings_data(games):
 	global errors
 	for g in range(len(games)):
 		print("I am processing ratings for game " + str(g), end="\r")
-		ratings.iloc[g]["variant"] = games[g]["speed"]
-		date = games[g]["createdAt"] + dt.timedelta(hours=player["timezone_diff"])
-		ratings.iloc[g]["date"] = date.strftime("%Y-%m-%d")
-		ratings.iloc[g]["time"] = date.strftime("%H:%M")
-		if games[g]["players"]["white"]["user"]["name"] == player["username"]:
-			ratings.iloc[g]["pre_rating"] = games[g]["players"]["white"]["rating"]
-			ratings.iloc[g]["opponent"] = games[g]["players"]["black"]["rating"]
-			ratings.iloc[g]["op_username"] = games[g]["players"]["black"]["user"]["name"]
-			ratings.iloc[g]["color"] = "white"
-			try:
-				if games[g]["winner"] == "white":
-					ratings.iloc[g]["result"] = "win"
-					ratings.iloc[g]["points"] = 1
-				elif games[g]["winner"] == "black":
-					ratings.iloc[g]["result"] = "loss"
-					ratings.iloc[g]["points"] = -1
-			except:
-				ratings.iloc[g]["result"] = "draw"
-				ratings.iloc[g]["points"] = 0
-			try:
-				ratings.iloc[g]["difference"] = games[g]["players"]["white"]["ratingDiff"]
-				ratings.iloc[g]["rating"] = ratings.iloc[g]["pre_rating"] + ratings.iloc[g]["difference"]
-			except:
-				ratings.iloc[g]["difference"] = 0
-				errors[0] += 1
-		else:
-			ratings.iloc[g]["pre_rating"] = games[g]["players"]["black"]["rating"]
-			ratings.iloc[g]["opponent"] = games[g]["players"]["white"]["rating"]
-			ratings.iloc[g]["op_username"] = games[g]["players"]["white"]["user"]["name"]
-			ratings.iloc[g]["color"] = "black"
-			try:
-				if games[g]["winner"] == "black":
-					ratings.iloc[g]["result"] = "win"
-					ratings.iloc[g]["points"] = 1
-				elif games[g]["winner"] == "white":
-					ratings.iloc[g]["result"] = "loss"
-					ratings.iloc[g]["points"] = -1
-			except:
-				ratings.iloc[g]["result"] = "draw"
-				ratings.iloc[g]["points"] = 0
-			try:
-				ratings.iloc[g]["difference"] = games[g]["players"]["black"]["ratingDiff"]
-				ratings.iloc[g]["rating"] = ratings.iloc[g]["pre_rating"] + ratings.iloc[g]["difference"]
-			except:
-				ratings.iloc[g]["difference"] = 0
-				errors[0] += 1
+		moves = games[g]["moves"]
+		if not moves == "":
+			moves_count = round(len(moves.split(" "))/2)
+			ratings.iloc[g]["moves_count"] = moves_count
+			ratings.iloc[g]["moves"] = moves
+			ratings.iloc[g]["id"] = games[g]["id"]
+			ratings.iloc[g]["opening"] = games[g]["opening"]["eco"]
+			ratings.iloc[g]["variant"] = games[g]["speed"]
+			date = games[g]["createdAt"] + dt.timedelta(hours=player["timezone_diff"])
+			ratings.iloc[g]["date"] = date.strftime("%Y-%m-%d")
+			ratings.iloc[g]["time"] = date.strftime("%H:%M")
+			if games[g]["players"]["white"]["user"]["name"] == player["username"]:
+				ratings.iloc[g]["pre_rating"] = games[g]["players"]["white"]["rating"]
+				ratings.iloc[g]["opponent"] = games[g]["players"]["black"]["rating"]
+				ratings.iloc[g]["op_username"] = games[g]["players"]["black"]["user"]["name"]
+				ratings.iloc[g]["color"] = "white"
+				try:
+					if games[g]["winner"] == "white":
+						ratings.iloc[g]["result"] = "win"
+						ratings.iloc[g]["points"] = 1
+					elif games[g]["winner"] == "black":
+						ratings.iloc[g]["result"] = "loss"
+						ratings.iloc[g]["points"] = -1
+				except:
+					ratings.iloc[g]["result"] = "draw"
+					ratings.iloc[g]["points"] = 0
+				try:
+					ratings.iloc[g]["difference"] = games[g]["players"]["white"]["ratingDiff"]
+					ratings.iloc[g]["rating"] = ratings.iloc[g]["pre_rating"] + ratings.iloc[g]["difference"]
+				except:
+					ratings.iloc[g]["difference"] = 0
+					errors[0] += 1
+			else:
+				ratings.iloc[g]["pre_rating"] = games[g]["players"]["black"]["rating"]
+				ratings.iloc[g]["opponent"] = games[g]["players"]["white"]["rating"]
+				ratings.iloc[g]["op_username"] = games[g]["players"]["white"]["user"]["name"]
+				ratings.iloc[g]["color"] = "black"
+				try:
+					if games[g]["winner"] == "black":
+						ratings.iloc[g]["result"] = "win"
+						ratings.iloc[g]["points"] = 1
+					elif games[g]["winner"] == "white":
+						ratings.iloc[g]["result"] = "loss"
+						ratings.iloc[g]["points"] = -1
+				except:
+					ratings.iloc[g]["result"] = "draw"
+					ratings.iloc[g]["points"] = 0
+				try:
+					ratings.iloc[g]["difference"] = games[g]["players"]["black"]["ratingDiff"]
+					ratings.iloc[g]["rating"] = ratings.iloc[g]["pre_rating"] + ratings.iloc[g]["difference"]
+				except:
+					ratings.iloc[g]["difference"] = 0
+					errors[0] += 1
 	ratings["op_difference"] = ratings["opponent"] - ratings["rating"]
 	m = "-- Rankings evolution for " + player["name"] + " was analyzed..." + "\n"
 	m += "   I noted " + str(errors[0]) + " errors this time." + "\n"
@@ -146,6 +154,8 @@ def games_played():
 			games_count.loc[ratings.iloc[g]["date"]]["rapid"] += 1
 		elif ratings.iloc[g]["variant"] == "classical":
 			games_count.loc[ratings.iloc[g]["date"]]["classical"] += 1
+		elif ratings.iloc[g]["variant"] == "correspondence":
+			games_count.loc[ratings.iloc[g]["date"]]["correspondence"] += 1
 	m = "-- " + player["name"] + "'s games were counted..." + "\n"
 	log.write(m)
 	print("I counted all games!        ", end="\n")
@@ -168,10 +178,12 @@ else:
 	all_ratings = ratings
 	all_evolution = ratings_evolution
 	all_games_count = games_count
+all_ratings.dropna(how='all', inplace=True) 
 all_ratings.sort_values(by=["date","time"], axis=0, inplace=True)
 all_ratings.to_csv("data/" + player["username"] + "_ratings_history.csv", index=False)
 all_evolution.to_csv("data/" + player["username"] + "_ratings_evolution.csv")
-all_games_count.to_csv("data/" + player["username"] + "_games.csv")
+all_games_count.to_csv("data/" + player["username"] + "_games_count.csv")
 print("All files saved!          ", end="\n")
 
 print("My work has ended...                          ", end="\n")
+print("I processed a total of " + str(len(games)) + " games!", end="\n")

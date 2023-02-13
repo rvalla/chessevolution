@@ -1,4 +1,4 @@
-from PIL import Image as im
+from PIL import Image as im, ImageDraw as idraw, ImageFont as ifont
 
 class PositionImage():
 	"The class to convert a fen chess position in an image..."
@@ -6,14 +6,18 @@ class PositionImage():
 	fen_pieces = {"P": [0,0], "N": [0,1], "B": [0,2], "R": [0,3], "Q": [0,4], "K": [0,5],
 				"p": [1,0], "n": [1,1], "b": [1,2], "r": [1,3], "q": [1,4], "k": [1,5]}
 
-	def __init__(self, size, sq_size):
-		self.sq_size = sq_size
-		self.size = size
+	def __init__(self, config):
+		self.sq_size = config["sq_size"]
+		self.size = config["size"]
+		self.board = im.open("img/boardG.png").resize((self.size, self.size))
 		self.pieces = self.load_pieces()
+		self.font = ifont.truetype(config["font"], self.get_font_size(self.size))
 
-	def position_to_image(self, fen, output):
+	def position_to_image(self, fen, message, filename):
 		rows = fen.split(" ")[0].split("/")
-		image = im.open("img/boardG.png").resize((self.size, self.size))
+		image = im.new("RGB", (self.size, self.size + self.size // 8), color=(255,223,183))
+		image.paste(self.board, (0,0))
+		draw = idraw.Draw(image)
 		x = 0
 		y = 0
 		for r in range(8):
@@ -27,7 +31,8 @@ class PositionImage():
 					image.paste(piece, (x * self.sq_size, y * self.sq_size), mask=piece)
 					x += 1
 			y += 1
-		image.save(output, "png", quality=85, optimize=True)
+		draw.text(self.get_message_position(), message, anchor="mm", font=self.font, fill=(20,40,20))
+		image.save(filename, "png", quality=90, optimize=True)
 
 	def get_piece_index(self, p):
 		return self.fen_pieces[p]
@@ -52,6 +57,14 @@ class PositionImage():
 		pieces.append(white)
 		pieces.append(black)
 		return pieces
+	
+	def get_message_position(self):
+		x = self.size // 2
+		y = self.size + self.sq_size // 2
+		return (x,y)
+
+	def get_font_size(self, size):
+		return size // 20
 
 	def __str__(self):
 		return "Hi, I am an the class to transform a fen chess position on an image..."

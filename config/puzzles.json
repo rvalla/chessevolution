@@ -1,0 +1,12 @@
+{
+	"engine": "/Users/rvalla/bin/Stockfish-sf_15.1/src/stockfish",
+    "puzzles_cp_threshold": 200,
+	"puzzles_ex_threshold": 0.2,
+    "board": "img/boardG.png",
+    "font": "font/Oswald-Regular.ttf",
+    "size": 800,
+    "sq_size": 100,
+    "background": "255,223,183",
+    "color": "20,40,20",
+    "output_path": "puzzles/"
+}

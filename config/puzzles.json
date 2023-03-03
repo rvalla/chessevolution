@@ -1,5 +1,6 @@
 {
 	"engine": "/Users/rvalla/bin/Stockfish-sf_15.1/src/stockfish",
+    "eng_depth": 15,
     "puzzles_cp_threshold": 200,
 	"puzzles_ex_threshold": 0.2,
     "board": "img/boardG.png",

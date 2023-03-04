@@ -8,7 +8,6 @@ import chart_config as cc
 
 log = open("log.md", "a") #preparing log file...
 today = dt.date.today()
-log.write("\n")
 log.write("### %s"%today)
 log.write(":" + "\n")
 

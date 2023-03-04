@@ -859,3 +859,6 @@
 -- Ticiano B games time analysis (rapid) was saved.
 -- Ticiano B games streak histogram (rapid) was saved.
 
+### 2023-03-04:
+-- Rodrigo Valla rival score was saved.
+

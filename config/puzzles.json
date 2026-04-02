@@ -1,13 +1,17 @@
 {
-	"engine": "/Users/rvalla/bin/Stockfish-sf_15.1/src/stockfish",
+	"engine": "/home/rvalla/software/stockfish/src/stockfish",
     "eng_depth": 15,
     "puzzles_cp_threshold": 200,
 	"puzzles_ex_threshold": 0.2,
     "board": "img/boardG.png",
     "font": "font/Oswald-Regular.ttf",
-    "size": 800,
-    "sq_size": 100,
+    "size": 1600,
+    "sq_size": 200,
     "background": "255,223,183",
     "color": "20,40,20",
-    "output_path": "puzzles/"
+    "output_path": "puzzles/",
+    "variant": "rapid",
+    "start_year": 2023,
+	"start_month": 2,
+	"start_day": 1
 }

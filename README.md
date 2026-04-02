@@ -1,12 +1,14 @@
-# Some analysis of Lichess data
+# Working with Lichess data
 
 I am studying chess. I am reading some books and playing over the board, but most of the time
 I am playing, solving puzzles and analyzing games on [Lichess](https://lichess.org). At this moment
-there are more than 8000 games on my history there. I decided to check some things using the
+there are more than 32000 games on my history there. I decided to check some things using the
 [Lichess API](https://lichess.org/api). Perhaps this code can be useful for you too.  
 
-## running the code
+## Data visualization
 
+First I worked in a set of tools to retrieve a player's games from [Lichess](https://lichess.org) and work
+with that.  
 The code will be always divided into scripts which obtain data from *Lichss API* (and save it to */data*) and
 scripts to plot different charts. So, if you run *player_games_charts.py* it will asume that there are *.csv*
 files in */data* and a player's *.json* file in */config*.  

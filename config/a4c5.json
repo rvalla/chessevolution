@@ -1,0 +1,19 @@
+{
+	"name": "a4c5",
+	"username": "a4c5",
+	"timezone_diff": 1,
+	"start_year": 2026,
+	"start_month": 1,
+	"start_day": 1,
+	"end_year": 2026,
+	"end_month": 3,
+	"end_day": 1,
+	"previous_data" : true,
+	"ratings_limits": "800,1200,50,1,1000,1300,50,1,1000,1300,50,1",
+	"results_limits": "-50,50,10,1,-20,20,5,1,-20,20,5,1,-20,20,5,1",
+	"games_limits": "0,30,5,1,0,30,5,1,0,30,5,1",
+	"week_interval": 8,
+	"plot_bullet": true,
+	"plot_blitz": true,
+	"plot_rapid": false
+}

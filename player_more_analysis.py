@@ -7,7 +7,7 @@ today = dt.date.today()
 log.write("### %s"%today)
 log.write(":" + "\n")
 
-player = js.load(open("config/sal1961.json"))
+player = js.load(open("config/rvalla.json"))
 
 print("Let's analyze some data from " + player["name"] + "'s games...", end="\n")
 
@@ -25,29 +25,30 @@ hours_index = ["00","01","02","03","04","05","06","07","08","09","10","11","12",
 hours_columns = ["bullet_g", "bullet_w", "bullet_d", "bullet_l", "bullet_res", "bullet_diff", "bullet_diff_avg",
 				"blitz_g", "blitz_w", "blitz_d", "blitz_l", "blitz_res", "blitz_diff", "blitz_diff_avg",
 				"rapid_g", "rapid_w", "rapid_d", "rapid_l", "rapid_res", "rapid_diff", "rapid_diff_avg",
-				"_g", "_w", "_d", "_l", "_res", "_diff", "_diff_avg"]
+				"classical_g", "classical_w", "classical_d", "classical_l", "classical_res", "classical_diff", "classical_diff_avg"]
 hours = pd.DataFrame(0, index=hours_index, columns=hours_columns)
+expected_result_cindex = {"bullet": 0, "blitz": 1, "rapid": 2, "classical": 3}
 expected_result_columns = ["bullet_g", "bullet_r", "bullet_p", "blitz_g", "blitz_r", "blitz_p",
-							"rapid_g", "rapid_r", "rapid_p"]
-expected_result = pd.DataFrame(0, index=[500 + x * 20 for x in range(116)], columns=expected_result_columns)
+							"rapid_g", "rapid_r", "rapid_p","classical_g", "classical_r", "classical_p"]
+expected_result = pd.DataFrame(0, index=[500 + x * 20 for x in range(120)], columns=expected_result_columns)
 expected_result_diff = pd.DataFrame(0, index=[-1500 + x * 20 for x in range(151)], columns=expected_result_columns)
 
 def analyze_day_time():
 	for g in range(ratings.shape[0]):
 		print("I am analyzing game " + str(g), end="\r")
-		variant = ratings.iloc[g]["variant"]
+		variant = ratings.loc[g,"variant"]
 		if variant == "bullet" or variant == "blitz" or variant == "rapid":
 			time = ratings.iloc[g]["time"].split(":")[0]
 			result = ratings.iloc[g]["points"]
-			hours.loc[time][variant + "_g"] += 1
-			hours.loc[time][variant + "_res"] += result
-			hours.loc[time][variant + "_diff"] += ratings.iloc[g]["difference"]
+			hours.loc[time, variant + "_g"] += 1
+			hours.loc[time, variant + "_res"] += result
+			hours.loc[time, variant + "_diff"] += ratings.iloc[g]["difference"]
 			if result == 1:
-				hours.loc[time][variant + "_w"] += 1
+				hours.loc[time, variant + "_w"] += 1
 			elif result == -1:
-				hours.loc[time][variant + "_l"] += 1
+				hours.loc[time, variant + "_l"] += 1
 			else:
-				hours.loc[time][variant + "_d"] += 1
+				hours.loc[time, variant + "_d"] += 1
 	hours["bullet_diff_avg"] = hours["bullet_diff"] / hours["bullet_g"]
 	hours["blitz_diff_avg"] = hours["blitz_diff"] / hours["blitz_g"]
 	hours["rapid_diff_avg"] = hours["rapid_diff"] / hours["rapid_g"]
@@ -76,10 +77,11 @@ def get_expected_results():
 		variant = ratings.iloc[g]["variant"]
 		if variant == "bullet" or variant == "blitz" or variant == "rapid":
 			result = ratings.iloc[g]["points"] + 1
-			expected_result.iloc[rows[0]][variant + "_g"] += 1
-			expected_result.iloc[rows[0]][variant + "_r"] += result
-			expected_result_diff.iloc[rows[1]][variant + "_g"] += 1
-			expected_result_diff.iloc[rows[1]][variant + "_r"] += result
+			c = expected_result_cindex[variant] * 3
+			expected_result.iloc[rows[0], c] += 1
+			expected_result.iloc[rows[0], c + 1] += result
+			expected_result_diff.iloc[rows[1], c] += 1
+			expected_result_diff.iloc[rows[1], c + 1] += result
 	expected_result["bullet_p"] = (expected_result["bullet_r"] / expected_result["bullet_g"]) / 2
 	expected_result["blitz_p"] = (expected_result["blitz_r"] / expected_result["blitz_g"]) / 2
 	expected_result["rapid_p"] = (expected_result["rapid_r"] / expected_result["rapid_g"]) / 2

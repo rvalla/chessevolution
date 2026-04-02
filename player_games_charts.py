@@ -11,7 +11,7 @@ today = dt.date.today()
 log.write("### %s"%today)
 log.write(":" + "\n")
 
-player = js.load(open("config/sal1961.json"))
+player = js.load(open("config/rvalla.json"))
 
 print("Let's plot some data from " + player["name"] + "'s games...", end="\n")
 
@@ -145,7 +145,7 @@ def game_count_scatter(texts, key, axis, week_interval):
 	plot = plt.scatter(the_games["x"], the_games[key], c=rating_diff, cmap=color_map)
 	cc.format_and_background()
 	cc.build_texts(texts[0], texts[1], texts[2])
-	cc.grid_and_ticks(True, axis[0],axis[1],axis[2],axis[3])
+	cc.grid_and_ticks(True,axis[0],axis[1],axis[2],axis[3])
 	cc.ticks_week_locator(week_interval)
 	c = plt.colorbar(plot)
 	cc.build_color_bar(c, get_scatter_limits(rating_diff), "Daily rating difference")
@@ -194,6 +194,8 @@ def get_player_limits(text, key):
 		offset = 4
 	elif key == "rapid":
 		offset = 8
+	elif key == "classical":
+		offset = 12
 	limits = []
 	list = text.split(",")
 	for i in range(4):
